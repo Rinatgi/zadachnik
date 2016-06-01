@@ -6,7 +6,7 @@ import datetime
 import json
 import sys
 
-new_tasks = {}
+new_tasks = []
 
 def main(): 
 # функция для выбора необходимой задачи
@@ -49,19 +49,20 @@ def new_note():
 	# перехватываем ошибку	
 	except ValueError:
 		print (u'Вы ввели неверный формат даты!Повторите ввод ')
-		new_note()# возвращаемся в начало запроса
+		return # возвращаемся в начало запроса
 
 	#new_task = {'target':new_target ,'start':dt_start, 'end':dt_end,'status': u'Не выполнено'}#создаем словарь с нашими данными 
 	#print (new_task)
 	status = 'not done'
 	# создаем файл с нашими данными для задачи
-	new_tasks = {new_target:{'start':data_start,'end':data_end,'status':status}} # создаем наш словарь с задачей.
-	f = open('data.txt','w')#создаем файл с нашими данными
+	new_task = {'target':new_target,'start':data_start,'end':data_end,'status':status} # создаем наш словарь с задачей.
+	new_tasks.append(new_task)
+	f = open('data1.txt','w')#создаем файл с нашими данными
 	data = json.dump(new_tasks,f, sort_keys = True)# преобразуем наш словарь в строку для записи в файл.
 	f.close()
 	main()# Возващаемся в начало программы
 def all_note():
-	f = open('data.txt')
+	f = open('data1.txt')
 	data = json.load(f)# преобразуем строку в файле обратно наш словарь
 	print (data)# смотрим список наших задач.
 	f.close()
