@@ -11,9 +11,9 @@ import sys
 # список наших задач
 new_tasks = [] 
 
-# функция для выбора необходимой задачи пользователем.
-def main(): 
 
+def main(): 
+# функция для выбора необходимой задачи пользователем.
     print (u''' \nВыбирите необходимое действие: \n
 				0.Выход.\n
 				1.Добавить заметку. \n
@@ -48,9 +48,9 @@ def main():
 		
         main()
 
-# функция принимающая новую задачу от пользователя	
+	
 def new_note():
-
+# функция принимающая новую задачу от пользователя
 	# вводим нашу задачу
     new_target = raw_input(u'Введите новую задачу: '.encode('utf-8'))
 	
@@ -63,9 +63,9 @@ def new_note():
     try:
 	# с помощью функции datetime преобразуем полученные строки в необходимый нам формат даты
 		# получаем дату начала задачи
-        dt_start = datetime.datetime.strptime(data_start,'%Y.%m.%d') 
+        dt_start = datetime.datetime.strptime(data_start, '%Y.%m.%d') 
 		# получаем дату конца задачи
-        dt_end = datetime.datetime.strptime(data_end,'%Y.%m.%d')	
+        dt_end = datetime.datetime.strptime(data_end, '%Y.%m.%d')	
 	# перехватываем ошибку	
     except ValueError:
         print (u'Вы ввели неверный формат даты!Повторите ввод ')
@@ -73,54 +73,56 @@ def new_note():
         new_note() 
 	
 	# создаем наш словарь с задачей.
-    new_task = {'target':new_target,'start':data_start,'end':data_end,'status':'not done'} 
+    new_task = {'target': new_target, 'start': data_start, 'end': data_end, 'status': 'not done'} 
 	# добавляем наш словарь в список
     new_tasks.append(new_task) 
 	# создаем файл с нашими данными
-    f = open('data1.txt','w') 
+    f = open('data1.txt', 'w') 
 	# преобразуем наш словарь в строку для записи в файл.
-    data = json.dump(new_tasks,f, sort_keys = True) 	
+    data = json.dump(new_tasks, f, sort_keys = True) 	
 	# закрываем наш файл.
     f.close() 
 	# возвращаемся в начало программы
     main()
 	
-# функция просмотра списка задач
-def all_note():
 
+def all_note():
+# функция просмотра списка задач
     f = open('data1.txt')
 	# преобразуем строку в файле обратно наш список
-    data = json.load(f) 
+    data = json.load(f)
+    # выведем наши задачи по одному элементу в строке
+    for i in range(len(data)): 
 	# смотрим список наших задач.
-    print (data) 
+    	print (data[i]) 
 	# закрываем наш файл.
     f.close()
 	
 	# возвращаемся в начало запроса задач.
     main()
 
-# функция просмотра выполненых задач
-def perfom_note():
 
+def perfom_note():
+# функция просмотра выполненых задач
     f = open('data1.txt')
     data = json.load(f)
-    for key,val in data.items():
-        print (key,val)
-
-	''''try:
-		f.values(u'done')
-	except ValueError:
-		print(u'Нет выпоненных задач')'''
-
-# функция просмотра будущих задач		
+    # создаем переменную для будущих задач
+    future_tasks = []
+    for i in data:
+        if i['status'] == 'not done':
+            future_tasks.append(i)
+            print (future_tasks)
+        else:
+            print('Нет будущих задач.')            
+	f.close()
 def future_note():
-	 
+# функция просмотра будущих задач		 
     f = open('data1.txt')
-    data = json.dump(new_tasks,f)
+    data = json.dump(new_tasks, f)
 
-# функция удаления задачи.
+
 def del_note():
-	
+# функция удаления задачи.
 	# просим ввести необходимую задачу
     del_target = raw_input(u'Введите задачу,которую хотите удалить:\n'.encode('utf-8'))
 	# проверка на правильный ввод задачи и её существовании.
@@ -131,9 +133,9 @@ def del_note():
         del_note()
     main()
 
-# функция выхода из программы
-def exit_note():
 
+def exit_note():
+# функция выхода из программы
     sys.exit()
 
 # возвращаемся в начало запроса задач.	
