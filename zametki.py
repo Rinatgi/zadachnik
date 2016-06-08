@@ -6,8 +6,8 @@
 
 import datetime
 import json
-import sys
 import os
+import sys
 # список наших задач
 new_tasks = []
 # пременная названия нашего файла
@@ -27,7 +27,6 @@ if os.path.exists(file_tasks):
 else:
     # файла нет, значит и задач ещё нет
     new_tasks = [] 
-
 
 def main(): 
     """ 
@@ -66,7 +65,6 @@ def main():
         
         main()
 
-    
 def new_note():
     """
     функция принимающая новую задачу от пользователя
@@ -107,61 +105,49 @@ def new_note():
     # добавляем наш словарь в список
     new_tasks.append(new_task) 
     # создаем файл с нашими данными
-    f = open(file_tasks, 'w') 
+    with open(file_tasks, 'w') as f:
     # преобразуем наш словарь в строку для записи в файл.
-    data = json.dump(new_tasks, f, sort_keys = True)     
+        data = json.dump(new_tasks, f, sort_keys=True)     
     # закрываем наш файл.
-    f.close() 
     # возвращаемся в начало программы
     main()
     
-
 def all_note():
     """
     функция просмотра списка задач
     """
-    f = open(file_tasks)
-    # преобразуем строку в файле обратно наш список
-    data = json.load(f)
     # выведем наши задачи по одному элементу в строке
-    for i in range(len(data)): 
+    for i in range(len(new_tasks)): 
         # смотрим список наших задач.
-        print data[i]
-    # закрываем наш файл.
-    f.close()
+        print new_tasks[i]
     
     # возвращаемся в начало запроса задач.
     main()
-
 
 def perfom_note():
     """    
     функция для просмотра выполненых задач
     """
-    f = open(file_tasks)
-    data = json.load(f)
     # создаем переменную для будущих задач
     perfom_tasks = []
     # организуем цикл проверки каждого элемента списка
-    for i in data:
+    for i in new_tasks:
         if i['status'] == 'done':
             perfom_tasks.append(i)
             print perfom_tasks
         else:
             print u'Нет выполненных задач'         
-    f.close()
 
     main()
+
 def future_note():
     """
     функция просмотра для будущих задач         
     """
-    f = open(file_tasks)
-    data = json.load(f)
     # создаем переменную для будущих задач
     future_tasks = []
     # организуем цикл проверки каждого элемента списка
-    for i in data:
+    for i in new_tasks:
     # проверяем условия 
         if i['status'] == 'not done':
             # то добавляем в наш список
@@ -169,11 +155,9 @@ def future_note():
             print future_tasks
         # или выводим сообщение об этом    
         else:
-            print u'Нет задач на будущее.'         
-    f.close()
+            print u'Нет задач на будущее.'        
 
     main()    
-
 
 def del_note():
     """
@@ -181,18 +165,12 @@ def del_note():
     """
     del_target = raw_input(u'Введите задачу,которую хотите удалить:\n'
     .encode('utf-8'))
-
-    f = open(file_tasks)
-    data = json.load(f)
     # организуем цикл проверки каждого элемента списка
-    for i in data:
-        if i['target'] == del_target:
-            data.remove(i)
-     
-    f.close()    
-
+    for elem in new_tasks:
+        if del_target in elem.values():
+            new_tasks.remove(elem)
+            
     main()
-
 
 def exit_note():
     """
