@@ -8,9 +8,6 @@ import datetime
 import json
 import os
 import sys
-
-# список наших задач
-tasks = []
 # пременная названия нашего файла
 file_tasks = 'tasks.txt'
 
@@ -44,27 +41,27 @@ def main():
     # просим ввести нужную задачу.
     variant = raw_input(u'Выбирите значение '.encode('utf-8')) 
     # проверка введенного значения.
-    if variant == '1':
-        new_note()
-
+    if variant == '1': 
+        new_note()    
+        return main()
     elif variant == '2':
         all_note()
-        
+        return main()    
     elif variant == '3':
         perfom_note()
-         
+        return main() 
     elif variant == '4':
         future_note()
-        
+        return main()
     elif variant == '5':
         del_note()
-    
+        return main()     
     elif variant == '6':
         change_note()
-
+        return main() 
     elif variant == '0':
-        exit_note()
-
+        sys.exit()
+    
     else:
         print u'Введите верное значение'
         
@@ -74,96 +71,87 @@ def new_note():
     """
     функция принимающая новую задачу от пользователя
     """ 
-    message = 1
-    while message == 1:
-        # вводим нашу задачу
-        new_target = raw_input(u'Введите новую задачу: '.encode('utf-8'))
-        
+    # вводим нашу задачу
+    new_target = raw_input(u'Введите новую задачу: '.encode('utf-8'))
+    # Цикл проверки на правильность ввода даты 
+    while True:
         # получаем у пользователя дату начала и конца задачи ввиде строки
         data_start = raw_input(
             u'Введите дату начала выполнения задачи '
             u'(год.месяц.число):\n '.encode('utf-8'))
-    
-        # проверка на правильность ввода даты
         try:
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
             # получаем дату начала задачи
             dt_start = datetime.datetime.strptime(data_start, '%Y.%m.%d')
-
         except ValueError:
-            # перехватываем ошибку    
+            # перехватываем ошибку,если не правильный ввод 
+            # возвращаемся в начало запроса даты  
             print u'Вы ввели неверный формат даты!Повторите ввод '
-            # возвращаемся в начало запроса даты    
-            return
+        #если дата введена правильно продолжаем дальше    
+        else:
+            break    
 
+    while True:
         data_end = raw_input(
-            u'Введите дату завершения задачи(год.месяц.число):\n'
-            .encode('utf-8'))
-    
+        u'Введите дату завершения задачи(год.месяц.число):\n'
+        .encode('utf-8'))
         try:
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
             # получаем дату конца задачи
-            dt_end = datetime.datetime.strptime(data_end, '%Y.%m.%d')    
-        
+            dt_end = datetime.datetime.strptime(data_end, '%Y.%m.%d') 
         except ValueError:
-            # перехватываем ошибку    
-            print u'Вы ввели неверный формат даты!Повторите ввод '
+            # перехватываем ошибку, если не правильный ввод
             # возвращаемся в начало запроса даты    
-            return
-        # создаем наш словарь с задачей.
-        new_task = {
-            'target': new_target, 
-            'start': data_start,   
-            'end': data_end, 
-            'status': 'not done',
+            print u'Вы ввели неверный формат даты!Повторите ввод '
+        # если все норм переходим к другому действию                 
+        else:
+            break
+    # создаем наш словарь с задачей
+    new_task = {
+        'target': new_target, 
+        'start': dt_start.strftime("%Y.%m.%d"),   
+        'end': dt_end.strftime("%Y.%m.%d"), 
+        'status': 'not done',
         } 
         # добавляем наш словарь в список
-        tasks.append(new_task)
-        # записываем наш список в файл 
-        write_file()    
-        # возвращаемся в начало программы
-        message = input(u'Задача добавлена. Продолжить? 1-Да,0-Нет\n'
-        .encode('utf-8'))
-     
-    else:
-
-
-        main()    
-        
-
+    tasks.append(new_task)
+        # записываем наш список в файл     
+    write_file()    
+        # возвращаемся в начало программы        
 
 def all_note():
     """
-    функция просмотра списка задач
+    функция просмотра списка задаx
     """
-    for (number,task)in enumerate(tasks):
+    for (number, task)in enumerate(tasks):
         number += 1
         string = u'Задача №{0}: {target}; {start}; {end}; {status}.'\
         .format(number,**task)
-        print string    
-    # возвращаемся в начало запроса задач.   
-    
+        print  string      
+    # возвращаемся в начало запроса задач.    
+
 def perfom_note():
     """    
     функция для просмотра выполненых задач
     """
+    print u'Список выполненых задач \n',"="* 50
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
+        # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
+
             string = u'Задача: {target}; {start}; {end}; {status}.'\
             .format(**task)
-            print string
-                
-
-    return main()
+            print string                
 
 def future_note():
     """
     функция просмотра для будущих задач         
     """
     # переменная с текущей датой
+    print 'Список будущих задач:\n',"="*50
     now_date = datetime.datetime.now()
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
@@ -172,12 +160,9 @@ def future_note():
         # преобразуем в формат datetime 
         data_end = datetime.datetime.strptime(data,'%Y.%m.%d')
         # сравниваем дату конца задачи с сегодняшним числом
-        if data_end < now_date:
+        if data_end > now_date:
             string = u'Задача: {target};{start};{end};{status}'.format(**task)
             print string 
-    
-
-    return main()
 
 def del_note():
     """
@@ -197,24 +182,15 @@ def del_note():
     try:    
         # удаляем элемент списка по его индексу.
         del tasks[del_task]
-        # перезаписывам наш файл после изменения списка задач
-        write_file()
+        
     # перехватывем ошибку, если пользователь ввел не верное число. 
     except IndexError:
         print u'Вы ввели не верное значение!Повторите ввод.'
-        
-        del_note()  
-    
-    return main()       
+    # перезаписывам наш файл после изменения списка задач         
+    write_file()          
 
 def change_note(): 
     pass
-
-def exit_note():
-    """
-    функция выхода из программы
-    """
-    sys.exit()
  
 def write_file():
     """ 
@@ -224,5 +200,7 @@ def write_file():
     with open(file_tasks, 'w') as f:
         # преобразуем наш словарь в строку для записи в файл.
         data = json.dump(tasks, f, sort_keys=True)  
-# возвращаемся в начало запроса задач.    
+# возвращаемся в начало запроса задач.       
+        
 main()
+
