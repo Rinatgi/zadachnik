@@ -111,8 +111,8 @@ def new_note():
     # создаем наш словарь с задачей
     new_task = {
         'target': new_target, 
-        'start': dt_start.strftime("%Y.%m.%d"),   
-        'end': dt_end.strftime("%Y.%m.%d"), 
+        'start': dt_start,   
+        'end': dt_end, 
         'status': 'not done',
         } 
         # добавляем наш словарь в список
@@ -126,9 +126,8 @@ def all_note():
     функция просмотра списка задаx
     """
     for (number, task)in enumerate(tasks):
-        number += 1
         string = u'Задача №{0}: {target}; {start}; {end}; {status}.'\
-        .format(number,**task)
+        .format(number + 1,**task)
         print  string      
     # возвращаемся в начало запроса задач.    
 
@@ -150,9 +149,7 @@ def future_note():
     """
     функция просмотра для будущих задач         
     """
-    # переменная с текущей датой
-    print 'Список будущих задач:\n',"="*50
-    now_date = datetime.datetime.now()
+    now = datetime.datetime.now()
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
         # получаем значение конца даты задачи
@@ -160,7 +157,7 @@ def future_note():
         # преобразуем в формат datetime 
         data_end = datetime.datetime.strptime(data,'%Y.%m.%d')
         # сравниваем дату конца задачи с сегодняшним числом
-        if data_end > now_date:
+        if data_end > now:
             string = u'Задача: {target};{start};{end};{status}'.format(**task)
             print string 
 
@@ -196,10 +193,17 @@ def write_file():
     """ 
     функция записи списка в файл
     """
+    # создаем новый список для записи в файл
+    write_tasks = []
+    for task in tasks:
+        # преобразуем формат datetime  в строку для корректной записи в файл.
+        task['start'] = str(task['start'])
+        task['end'] = str(task['end'])
+        write_tasks.append(task)
     # создаем файл с нашими данными
     with open(file_tasks, 'w') as f:
         # преобразуем наш словарь в строку для записи в файл.
-        data = json.dump(tasks, f, sort_keys=True)  
+        data = json.dump(write_tasks, f, sort_keys=True)  
 # возвращаемся в начало запроса задач.       
         
 main()
