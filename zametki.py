@@ -10,6 +10,8 @@ import os
 import sys
 # пременная названия нашего файла
 file_tasks = 'tasks.txt'
+# формат даты 
+form = '%Y.%m.%d'
 
 if os.path.exists(file_tasks):
     # если файл существует
@@ -19,10 +21,8 @@ if os.path.exists(file_tasks):
             # при загрузке могут возникнуть какие то ошибки
             tasks = json.load(f)
             for task in tasks:
-                task['start'] = datetime.datetime.strptime(task['start'],\
-                                '%Y.%m.%d')
-                task['end'] = datetime.datetime.strptime(task['end'],\
-                              '%Y.%m.%d')
+                task['start'] = datetime.datetime.strptime(task['start'], form)
+                task['end'] = datetime.datetime.strptime(task['end'], form)
         except Exception:
             # при возникновении любой ошибки, будем считать файл не корректным
             tasks = []
@@ -88,7 +88,7 @@ def new_note():
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
             # получаем дату начала задачи
-            dt_start = datetime.datetime.strptime(data_start, '%Y.%m.%d')
+            dt_start = datetime.datetime.strptime(data_start, form)
         except ValueError:
             # перехватываем ошибку,если не правильный ввод 
             # возвращаемся в начало запроса даты  
@@ -105,7 +105,7 @@ def new_note():
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
             # получаем дату конца задачи
-            dt_end = datetime.datetime.strptime(data_end, '%Y.%m.%d') 
+            dt_end = datetime.datetime.strptime(data_end, form) 
         except ValueError:
             # перехватываем ошибку, если не правильный ввод
             # возвращаемся в начало запроса даты    
@@ -158,11 +158,8 @@ def future_note():
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
         # получаем значение конца даты задачи
-        data_end = task['end']
-        # преобразуем в формат datetime 
-        #data_end = datetime.datetime.strptime(data,'%Y.%m.%d')
         # сравниваем дату конца задачи с сегодняшним числом
-        if data_end > now:
+        if task['end'] > now:
             string = u'Задача: {target};{start};{end};{status}'.format(**task)
             print string 
 
@@ -202,8 +199,8 @@ def write_file():
     write_tasks = []
     for task in tasks:
         # преобразуем формат datetime  в строку для корректной записи в файл.
-        task['start'] = task['start'].strftime('%Y.%m.%d')
-        task['end'] = task['end'].strftime('%Y.%m.%d')
+        task['start'] = task['start'].strftime(form)
+        task['end'] = task['end'].strftime(form)
         write_tasks.append(task)
     # создаем файл с нашими данными
     with open(file_tasks, 'w') as f:
