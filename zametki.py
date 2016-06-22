@@ -18,6 +18,11 @@ if os.path.exists(file_tasks):
         try:
             # при загрузке могут возникнуть какие то ошибки
             tasks = json.load(f)
+            for task in tasks:
+                task['start'] = datetime.datetime.strptime(task['start'],\
+                                '%Y.%m.%d')
+                task['end'] = datetime.datetime.strptime(task['end'],\
+                              '%Y.%m.%d')
         except Exception:
             # при возникновении любой ошибки, будем считать файл не корректным
             tasks = []
@@ -125,9 +130,9 @@ def all_note():
     """
     функция просмотра списка задаx
     """
-    for (number, task)in enumerate(tasks):
+    for (number, task)in enumerate(tasks, start=1):
         string = u'Задача №{0}: {target}; {start}; {end}; {status}.'\
-        .format(number + 1,**task)
+        .format(number, **task)
         print  string      
     # возвращаемся в начало запроса задач.    
 
@@ -153,9 +158,9 @@ def future_note():
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
         # получаем значение конца даты задачи
-        data = task['end']
+        data_end = task['end']
         # преобразуем в формат datetime 
-        data_end = datetime.datetime.strptime(data,'%Y.%m.%d')
+        #data_end = datetime.datetime.strptime(data,'%Y.%m.%d')
         # сравниваем дату конца задачи с сегодняшним числом
         if data_end > now:
             string = u'Задача: {target};{start};{end};{status}'.format(**task)
@@ -197,8 +202,8 @@ def write_file():
     write_tasks = []
     for task in tasks:
         # преобразуем формат datetime  в строку для корректной записи в файл.
-        task['start'] = str(task['start'])
-        task['end'] = str(task['end'])
+        task['start'] = task['start'].strftime('%Y.%m.%d')
+        task['end'] = task['end'].strftime('%Y.%m.%d')
         write_tasks.append(task)
     # создаем файл с нашими данными
     with open(file_tasks, 'w') as f:
