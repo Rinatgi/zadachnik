@@ -11,7 +11,7 @@ import sys
 # пременная названия нашего файла
 file_tasks = 'tasks.txt'
 # формат даты 
-form = '%Y.%m.%d'
+date_format = '%Y.%m.%d'
 
 if os.path.exists(file_tasks):
     # если файл существует
@@ -21,8 +21,10 @@ if os.path.exists(file_tasks):
             # при загрузке могут возникнуть какие то ошибки
             tasks = json.load(f)
             for task in tasks:
-                task['start'] = datetime.datetime.strptime(task['start'], form)
-                task['end'] = datetime.datetime.strptime(task['end'], form)
+                task['start'] = (datetime.datetime.strptime(task['start'], 
+                                date_format))
+                task['end'] = (datetime.datetime.strptime(task['end'], 
+                              date_format))
         except Exception:
             # при возникновении любой ошибки, будем считать файл не корректным
             tasks = []
@@ -32,45 +34,48 @@ else:
     tasks = [] 
 
 def main(): 
+
     """ 
     функция для выбора необходимой задачи пользователем.
     """
-    print u''' \nВыбирите необходимое действие: \n
-                0.Выход.\n
-                1.Добавить заметку. \n
-                2.Посмотреть список всех задач. \n
-                3.Список выполненных задач. \n
-                4.Список будущих задач. \n
-                5.Удалить заметку. \n
-                6.Изменить задачу.'''
+    while True:
+        print u''' \nВыбирите необходимое действие: \n
+                    0.Выход.\n
+                    1.Добавить заметку. \n
+                    2.Посмотреть список всех задач. \n
+                    3.Список выполненных задач. \n
+                    4.Список будущих задач. \n
+                    5.Удалить заметку. \n
+                    6.Изменить задачу.'''
     # просим ввести нужную задачу.
-    variant = raw_input(u'Выбирите значение '.encode('utf-8')) 
-    # проверка введенного значения.
-    if variant == '1': 
-        new_note()    
-        return main()
-    elif variant == '2':
-        all_note()
-        return main()    
-    elif variant == '3':
-        perfom_note()
-        return main() 
-    elif variant == '4':
-        future_note()
-        return main()
-    elif variant == '5':
-        del_note()
-        return main()     
-    elif variant == '6':
-        change_note()
-        return main() 
-    elif variant == '0':
-        sys.exit()
+        variant = raw_input(u'Выбирите значение '.encode('utf-8')) 
     
-    else:
-        print u'Введите верное значение'
-        
-        return main()
+    
+    # проверка введенного значения.
+        if variant == '1': 
+            new_note()
+            continue    
+        elif variant == '2':
+            all_note()
+            continue
+        elif variant == '3':
+            perfom_note()
+            continue 
+        elif variant == '4':
+            future_note()
+            continue
+        elif variant == '5':
+            del_note()
+            continue     
+        elif variant == '6':
+            change_note()
+            continue 
+        elif variant == '0':
+            sys.exit()
+            continue
+        else:
+            print u'Введите верное значение'
+            continue
 
 def new_note():
     """
@@ -88,7 +93,7 @@ def new_note():
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
             # получаем дату начала задачи
-            dt_start = datetime.datetime.strptime(data_start, form)
+            dt_start = datetime.datetime.strptime(data_start, date_format)
         except ValueError:
             # перехватываем ошибку,если не правильный ввод 
             # возвращаемся в начало запроса даты  
@@ -105,7 +110,7 @@ def new_note():
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
             # получаем дату конца задачи
-            dt_end = datetime.datetime.strptime(data_end, form) 
+            dt_end = datetime.datetime.strptime(data_end, date_format) 
         except ValueError:
             # перехватываем ошибку, если не правильный ввод
             # возвращаемся в начало запроса даты    
@@ -145,7 +150,6 @@ def perfom_note():
     for task in tasks:
         # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
-
             string = u'Задача: {target}; {start}; {end}; {status}.'\
             .format(**task)
             print string                
@@ -199,8 +203,8 @@ def write_file():
     write_tasks = []
     for task in tasks:
         # преобразуем формат datetime  в строку для корректной записи в файл.
-        task['start'] = task['start'].strftime(form)
-        task['end'] = task['end'].strftime(form)
+        task['start'] = task['start'].strftime(date_format)
+        task['end'] = task['end'].strftime(date_format)
         write_tasks.append(task)
     # создаем файл с нашими данными
     with open(file_tasks, 'w') as f:
