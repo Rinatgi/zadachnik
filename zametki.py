@@ -83,7 +83,6 @@ def new_note():
     """ 
     # вводим нашу задачу
     new_target = raw_input(u'Введите новую задачу: '.encode('utf-8'))
-    get_fp(new_target)
     # Цикл проверки на правильность ввода даты 
     while True:
         # получаем у пользователя дату начала и конца задачи ввиде строки
@@ -140,12 +139,11 @@ def all_note():
     
     for (number, task) in enumerate(tasks, start=1):
         # переменная будет хранить название задачи
-        a = task['target']
+        print_target = task['target']
         # если у название задачи больше 10 символов  мы его обрезаем
-        if len(a) > 10:
-            task['target'] = a[:10-3] + '...'     
-        string = u'Задача №{0:2}: {target:10}; {start}; {end}; {status}.'\
-        .format(number, **task)
+        a = get_fp(print_target)        
+        string = u'Задача №{0:2}: {1:10}; {start}; {end}; {status}.'\
+        .format(number, a, **task)
         print  string      
     # возвращаемся в начало запроса задач.    
 
@@ -210,26 +208,24 @@ def write_file():
     # создаем новый список для записи в файл
     write_tasks = []
     for task in tasks:
+        copy_task = task.copy()
         # преобразуем формат datetime  в строку для корректной записи в файл.
-        task['start'] = task['start'].strftime(date_format)
-        task['end'] = task['end'].strftime(date_format)
-        write_tasks.append(task)
+        copy_task['start'] = copy_task['start'].strftime(date_format)
+        copy_task['end'] = copy_task['end'].strftime(date_format)
+        write_tasks.append(copy_task)
     # создаем файл с нашими данными
     with open(file_tasks, 'w') as f:
         # преобразуем наш словарь в строку для записи в файл.
         data = json.dump(write_tasks, f, sort_keys=True)  
 # возвращаемся в начало запроса задач.              
-def get_fp(size=10):
+def get_fp(print_target, size=10):
     """
     приджнимает строку, и макс размер длины строки
     и если строка длинее этого размера, то обрежет её и добавит 
     в конце три точки
     """
-    for task in tasks:
-        a = task['target']
-        if len(a) > size: 
-           return a[:size-3] + '...'
-        return a
+    if len(print_target) > size: 
+        return print_target[:size-3] + '...'
+    return print_target
+
 main()
-
-
