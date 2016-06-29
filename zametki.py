@@ -8,6 +8,7 @@ import datetime
 import json
 import os
 import sys
+
 # пременная названия нашего файла
 file_tasks = 'tasks.txt'
 # формат даты 
@@ -54,28 +55,27 @@ def main():
     # проверка введенного значения.
         if variant == '1': 
             new_note()
-            continue    
+                
         elif variant == '2':
             all_note()
-            continue
+            
         elif variant == '3':
             perfom_note()
-            continue 
+
         elif variant == '4':
             future_note()
-            continue
+
         elif variant == '5':
             del_note()
-            continue     
+
         elif variant == '6':
             change_note()
-            continue 
+
         elif variant == '0':
             sys.exit()
-            continue
+
         else:
             print u'Введите верное значение'
-            continue
 
 def new_note():
     """
@@ -83,6 +83,7 @@ def new_note():
     """ 
     # вводим нашу задачу
     new_target = raw_input(u'Введите новую задачу: '.encode('utf-8'))
+    get_fp(new_target)
     # Цикл проверки на правильность ввода даты 
     while True:
         # получаем у пользователя дату начала и конца задачи ввиде строки
@@ -134,9 +135,16 @@ def new_note():
 def all_note():
     """
     функция просмотра списка задаx
-    """
-    for (number, task)in enumerate(tasks, start=1):
-        string = u'Задача №{0}: {target}; {start}; {end}; {status}.'\
+
+    """  
+    
+    for (number, task) in enumerate(tasks, start=1):
+        # переменная будет хранить название задачи
+        a = task['target']
+        # если у название задачи больше 10 символов  мы его обрезаем
+        if len(a) > 10:
+            task['target'] = a[:10-3] + '...'     
+        string = u'Задача №{0:2}: {target:10}; {start}; {end}; {status}.'\
         .format(number, **task)
         print  string      
     # возвращаемся в начало запроса задач.    
@@ -150,7 +158,7 @@ def perfom_note():
     for task in tasks:
         # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
-            string = u'Задача: {target}; {start}; {end}; {status}.'\
+            string = u'Задача: {target:<10}; {start}; {end}; {status}.'\
             .format(**task)
             print string                
 
@@ -210,7 +218,18 @@ def write_file():
     with open(file_tasks, 'w') as f:
         # преобразуем наш словарь в строку для записи в файл.
         data = json.dump(write_tasks, f, sort_keys=True)  
-# возвращаемся в начало запроса задач.       
-        
+# возвращаемся в начало запроса задач.              
+def get_fp(size=10):
+    """
+    приджнимает строку, и макс размер длины строки
+    и если строка длинее этого размера, то обрежет её и добавит 
+    в конце три точки
+    """
+    for task in tasks:
+        a = task['target']
+        if len(a) > size: 
+           return a[:size-3] + '...'
+        return a
 main()
+
 
