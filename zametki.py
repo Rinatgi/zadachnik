@@ -148,10 +148,11 @@ def perfom_note():
     print u'Список выполненых задач \n',"="* 50
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
+        target = task['target']
         # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
             print (
-            u'Задача: {0}; {start}; {end}; {status}.'
+            u'Задача: {0:10}; {start}; {end}; {status}.'
             .format(get_short_string(target), **task))
                         
 def future_note():
@@ -161,11 +162,12 @@ def future_note():
     now = datetime.datetime.now()
     # организуем цикл проверки каждого элемента списка
     for task in tasks:
+        target = task['target']
         # получаем значение конца даты задачи
         # сравниваем дату конца задачи с сегодняшним числом
         if task['end'] > now:
             print( 
-            u'Задача: {0}; {start}; {end}; {status}'
+            u'Задача: {0:10}; {start}; {end}; {status}'
             .format(get_short_string(target), **task))
 
 def del_note():
