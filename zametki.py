@@ -22,10 +22,10 @@ if os.path.exists(file_tasks):
             # при загрузке могут возникнуть какие то ошибки
             tasks = json.load(f)
             for task in tasks:
-                task['start'] = (datetime.datetime.strptime(task['start'], 
-                                date_format))
-                task['end'] = (datetime.datetime.strptime(task['end'], 
-                              date_format))
+                task['start'] = ( 
+                datetime.datetime.strptime(task['start'], date_format))
+                task['end'] = (
+                datetime.datetime.strptime(task['end'], date_format))
         except Exception:
             # при возникновении любой ошибки, будем считать файл не корректным
             tasks = []
@@ -49,9 +49,7 @@ def main():
                     5.Удалить заметку. \n
                     6.Изменить задачу.'''
     # просим ввести нужную задачу.
-        variant = raw_input(u'Выбирите значение '.encode('utf-8')) 
-    
-    
+        variant = raw_input(u'Выбирите значение '.encode('utf-8'))  
     # проверка введенного значения.
         if variant == '1': 
             new_note()
@@ -134,18 +132,14 @@ def new_note():
 def all_note():
     """
     функция просмотра списка задаx
-
     """  
-    
     for (number, task) in enumerate(tasks, start=1):
         # переменная будет хранить название задачи
         target = task['target']
-        # если у название задачи больше 10 символов  мы его обрезаем
-        print_target = cut_line(target)        
-        print (u'Задача №{0}: {1:10}; {start}; {end}; {status}.'
-        .format(number, print_target, **task))
-      
-    # возвращаемся в начало запроса задач.    
+        # если у название задачи больше 10 символов  мы его обрезаем       
+        print (
+        u'Задача №{0}: {1:10}; {start}; {end}; {status}.'
+        .format(number, get_short_string(target), **task))   
 
 def perfom_note():
     """    
@@ -156,10 +150,10 @@ def perfom_note():
     for task in tasks:
         # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
-            print (u'Задача: {target:<10}; {start}; {end}; {status}.'
-            .format(**task))
+            print (
+            u'Задача: {0}; {start}; {end}; {status}.'
+            .format(get_short_string(target), **task))
                         
-
 def future_note():
     """
     функция просмотра для будущих задач         
@@ -170,8 +164,9 @@ def future_note():
         # получаем значение конца даты задачи
         # сравниваем дату конца задачи с сегодняшним числом
         if task['end'] > now:
-            print u'Задача: {target}; {start}; {end}; {status}'.format(**task)
-    
+            print( 
+            u'Задача: {0}; {start}; {end}; {status}'
+            .format(get_short_string(target), **task))
 
 def del_note():
     """
@@ -220,7 +215,7 @@ def write_file():
         # преобразуем наш словарь в строку для записи в файл.
         data = json.dump(write_tasks, f, sort_keys=True)  
 
-def cut_line(target, size=10):
+def get_short_string(target, size=10):
     """
      функция принимает строку, и макс размер длины строки
     и если строка длинее этого размера, то обрежет её и добавит 
