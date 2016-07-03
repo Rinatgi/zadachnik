@@ -139,12 +139,12 @@ def all_note():
     
     for (number, task) in enumerate(tasks, start=1):
         # переменная будет хранить название задачи
-        print_target = task['target']
+        target = task['target']
         # если у название задачи больше 10 символов  мы его обрезаем
-        a = get_fp(print_target)        
-        string = u'Задача №{0:2}: {1:10}; {start}; {end}; {status}.'\
-        .format(number, a, **task)
-        print  string      
+        print_target = cut_line(target)        
+        print (u'Задача №{0}: {1:10}; {start}; {end}; {status}.'
+        .format(number, print_target, **task))
+      
     # возвращаемся в начало запроса задач.    
 
 def perfom_note():
@@ -156,9 +156,9 @@ def perfom_note():
     for task in tasks:
         # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
-            string = u'Задача: {target:<10}; {start}; {end}; {status}.'\
-            .format(**task)
-            print string                
+            print (u'Задача: {target:<10}; {start}; {end}; {status}.'
+            .format(**task))
+                        
 
 def future_note():
     """
@@ -170,8 +170,8 @@ def future_note():
         # получаем значение конца даты задачи
         # сравниваем дату конца задачи с сегодняшним числом
         if task['end'] > now:
-            string = u'Задача: {target};{start};{end};{status}'.format(**task)
-            print string 
+            print u'Задача: {target}; {start}; {end}; {status}'.format(**task)
+    
 
 def del_note():
     """
@@ -208,24 +208,27 @@ def write_file():
     # создаем новый список для записи в файл
     write_tasks = []
     for task in tasks:
+        # создадим копию нашего словаря,чтобы не вносить изменения 
+        # в основном словаре
         copy_task = task.copy()
         # преобразуем формат datetime  в строку для корректной записи в файл.
-        copy_task['start'] = copy_task['start'].strftime(date_format)
-        copy_task['end'] = copy_task['end'].strftime(date_format)
+        copy_task['start'] = task['start'].strftime(date_format)
+        copy_task['end'] = task['end'].strftime(date_format)
         write_tasks.append(copy_task)
     # создаем файл с нашими данными
     with open(file_tasks, 'w') as f:
         # преобразуем наш словарь в строку для записи в файл.
         data = json.dump(write_tasks, f, sort_keys=True)  
-# возвращаемся в начало запроса задач.              
-def get_fp(print_target, size=10):
+
+def cut_line(target, size=10):
     """
-    приджнимает строку, и макс размер длины строки
+     функция принимает строку, и макс размер длины строки
     и если строка длинее этого размера, то обрежет её и добавит 
     в конце три точки
     """
-    if len(print_target) > size: 
-        return print_target[:size-3] + '...'
-    return print_target
+    cut = 3
+    if len(target) > size: 
+        target = target[:size-cut ] + '...'
+    return target
 
 main()
