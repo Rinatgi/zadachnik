@@ -226,9 +226,9 @@ def cut_line(target, size=10):
     и если строка длинее этого размера, то обрежет её и добавит 
     в конце три точки
     """
-    cut = 3
+    three_dots = '...'
     if len(target) > size: 
-        target = target[:size-cut ] + '...'
+        target = target[:size-len(three_dots) ] + three_dots
     return target
 
 main()
