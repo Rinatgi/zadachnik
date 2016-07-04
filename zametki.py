@@ -23,9 +23,9 @@ if os.path.exists(file_tasks):
             tasks = json.load(f)
             for task in tasks:
                 task['start'] = ( 
-                datetime.datetime.strptime(task['start'], date_format))
+                    datetime.datetime.strptime(task['start'], date_format))
                 task['end'] = (
-                datetime.datetime.strptime(task['end'], date_format))
+                    datetime.datetime.strptime(task['end'], date_format))
         except Exception:
             # при возникновении любой ошибки, будем считать файл не корректным
             tasks = []
@@ -35,7 +35,6 @@ else:
     tasks = [] 
 
 def main(): 
-
     """ 
     функция для выбора необходимой задачи пользователем.
     """
@@ -85,8 +84,8 @@ def new_note():
     while True:
         # получаем у пользователя дату начала и конца задачи ввиде строки
         data_start = raw_input(
-            u'Введите дату начала выполнения задачи '
-            u'(год.месяц.число):\n '.encode('utf-8'))
+                                u'Введите дату начала выполнения задачи '
+                                u'(год.месяц.число):\n '.encode('utf-8'))
         try:
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
@@ -102,8 +101,8 @@ def new_note():
 
     while True:
         data_end = raw_input(
-        u'Введите дату завершения задачи(год.месяц.число):\n'
-        .encode('utf-8'))
+                            u'Введите дату завершения задачи '
+                            u'(год.месяц.число):\n'.encode('utf-8'))
         try:
             # с помощью функции datetime преобразуем полученные строки 
             # в необходимый нам формат даты
@@ -138,8 +137,8 @@ def all_note():
         target = task['target']
         # если у название задачи больше 10 символов  мы его обрезаем       
         print (
-        u'Задача №{0}: {1:10}; {start}; {end}; {status}.'
-        .format(number, get_short_string(target), **task))   
+              u'Задача №{0}: {1:10}; {start}; {end}; {status}.'
+              .format(number, get_short_string(target), **task))   
 
 def perfom_note():
     """    
@@ -152,8 +151,8 @@ def perfom_note():
         # если есть похожее значение в ключе мы его принтуем
         if task['status'] == 'done':
             print (
-            u'Задача: {0:10}; {start}; {end}; {status}.'
-            .format(get_short_string(target), **task))
+                  u'Задача: {0:10}; {start}; {end}; {status}.'
+                  .format(get_short_string(target), **task))
                         
 def future_note():
     """
@@ -167,8 +166,8 @@ def future_note():
         # сравниваем дату конца задачи с сегодняшним числом
         if task['end'] > now:
             print( 
-            u'Задача: {0:10}; {start}; {end}; {status}'
-            .format(get_short_string(target), **task))
+                  u'Задача: {0:10}; {start}; {end}; {status}'
+                  .format(get_short_string(target), **task))
 
 def del_note():
     """
@@ -176,23 +175,23 @@ def del_note():
     """
     # определяем переменную для записи идентификатора задачи
     del_task = 0
-    # вызываем функцию просмотра всех задач.
+    # вызываем функцию просмотра всех задач. 
     all_note()
-    # просим пользователя ввести номер задачи
+    # просим пользователя ввести номер задачи  
     del_target = input(u'Введите номер задачи,которую хотите удалить:\n'
-    .encode('utf-8'))
-    # декременитируем введенное число,
-    # т.к.элементы списка начинают отчет с нуля.
+                      .encode('utf-8'))
+    # декременитируем введенное число,  
+    # т.к.элементы списка начинают отчет с нуля.  
     del_task = del_target - 1
     
     try:    
-        # удаляем элемент списка по его индексу.
+        # удаляем элемент списка по его индексу.  
         del tasks[del_task]
         
-    # перехватывем ошибку, если пользователь ввел не верное число. 
+    # перехватывем ошибку, если пользователь ввел не верное число.   
     except IndexError:
         print u'Вы ввели не верное значение!Повторите ввод.'
-    # перезаписывам наш файл после изменения списка задач         
+    # перезаписывам наш файл после изменения списка задач           
     write_file()          
 
 def change_note(): 
@@ -200,26 +199,28 @@ def change_note():
  
 def write_file():
     """ 
-    функция записи списка в файл
+    функция записи списка в файл  
     """
-    # создаем новый список для записи в файл
+    # создаем новый список для записи в файл  
     write_tasks = []
     for task in tasks:
-        # создадим копию нашего словаря,чтобы не вносить изменения 
-        # в основном словаре
+        """
+        создадим копию нашего словаря,чтобы не вносить изменения 
+        в основном словаре
+        """
         copy_task = task.copy()
         # преобразуем формат datetime  в строку для корректной записи в файл.
         copy_task['start'] = task['start'].strftime(date_format)
         copy_task['end'] = task['end'].strftime(date_format)
         write_tasks.append(copy_task)
-    # создаем файл с нашими данными
+    # создаем файл с нашими данными    
     with open(file_tasks, 'w') as f:
-        # преобразуем наш словарь в строку для записи в файл.
+        # преобразуем наш словарь в строку для записи в файл.  
         data = json.dump(write_tasks, f, sort_keys=True)  
 
 def get_short_string(target, size=10):
     """
-     функция принимает строку, и макс размер длины строки
+    функция принимает строку, и макс размер длины строки
     и если строка длинее этого размера, то обрежет её и добавит 
     в конце три точки
     """
