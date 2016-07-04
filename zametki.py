@@ -79,7 +79,7 @@ def new_note():
     функция принимающая новую задачу от пользователя
     """ 
     # вводим нашу задачу
-    new_target = raw_input(u'Введите новую задачу: '.decode('utf-8'))
+    new_target = raw_input(u'Введите новую задачу: '.encode('utf-8'))
     # цикл проверки на правильность ввода даты 
     while True:
         # получаем у пользователя дату начала и конца задачи ввиде строки
@@ -117,7 +117,7 @@ def new_note():
             break
     # создаем наш словарь с задачей
     new_task = {
-        'target': new_target, 
+        'target': new_target.decode('utf-8'), 
         'start': dt_start,   
         'end': dt_end, 
         'status': 'not done',
