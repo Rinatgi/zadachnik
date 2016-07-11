@@ -50,31 +50,31 @@ def main():
         # просим ввести нужную задачу.
         # перехватываем ошибку,если пользоватеь нажал Ctrl+C
         try:  
-            variant = raw_input(u'Выберите значение '.encode('utf-8'))
+            variant = input(u'Выберите значение '.encode('utf-8'))
 
         except KeyboardInterrupt:
             sys.exit()
 
-        # проверка введенного значения
-        if variant == '1': 
+        # проверка введенного значения 
+        if variant == 1: 
             new_note()
                 
-        elif variant == '2':
-            all_note(variant)
+        elif variant == 2:
+            print_task(_filter=True)
             
-        elif variant == '3':
-            all_note(variant)
+        elif variant == 3:
+            print_task(_filter=perfom_note)
 
-        elif variant == '4':
-            all_note(variant)
+        elif variant == 4:
+            print_task(_filter=future_note)
 
-        elif variant == '5':
+        elif variant == 5:
             del_note()
 
-        elif variant == '6':
+        elif variant == 6:
             change_note()
 
-        elif variant == '0':
+        elif variant == 0:
             sys.exit()
 
         else:
@@ -133,58 +133,29 @@ def new_note():
     # записываем наш список в файл     
     write_file()
 
-def print_note(number,target,task):
-    """
-    функция вывода списка задач.
-    """
-    print( 
-        u'Задача №{0}| {1:10} | {start} | {end} | {status}'
-        .format(number, get_short_string(target), **task))
+def perfom_note(task):
+    
+    if task['status'] == 'done':
+        return True                 
+    else:
+        return False
 
-def all_note(variant):
-    """
-    функция просмотра списка задаx
-    """  
-    for (number, task) in enumerate(tasks, start=1):
-        # переменная будет хранить название задачи
-        target = task['target']
-        # если у название задачи больше 10 символов  мы его обрезаем       
-        if variant == '2':
-            print_note(number,target,task)
+def future_note(task):
 
-        elif variant == '3':
-            if task['status'] == 'done':
-                print_note(number,target,task)    
-
-        elif variant == '4':
-            now = datetime.datetime.now()
-            if task['end'] > now:
-                print_note(number,target,task)
-
-def perfom_note():
-    """    
-    функция для просмотра выполненых задач
-    """
-    print u'Список выполненых задач \n',"="* 50
-    # организуем цикл проверки каждого элемента списка
-    for (number, task) in enumerate(tasks, start=1):
-        target = task['target']
-        # если есть похожее значение в ключе мы его принтуем
-        if task['status'] == 'done':
-            print_note(number,target,task)
-                        
-def future_note():
-    """
-    функция просмотра для будущих задач         
-    """
     now = datetime.datetime.now()
-    # организуем цикл проверки каждого элемента списка
+    if task['end'] > now:
+        return True
+    else:
+        return False    
+
+def print_task(_filter):
+    now = datetime.datetime.now()
     for (number, task) in enumerate(tasks, start=1):
-        target = task['target']
-        # получаем значение конца даты задачи
-        # сравниваем дату конца задачи с сегодняшним числом
-        if task['end'] > now:
-            print_note(number,target,task)
+        target = task['target'] 
+        if  _filter(task) == True:
+            print( 
+                u'Задача №{0}| {1:10} | {start} | {end} | {status}'
+                .format(number, get_short_string(target), **task))
 
 def del_note():
     """
