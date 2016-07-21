@@ -13,6 +13,8 @@ import sys
 file_tasks = 'tasks.txt'
 # формат даты 
 date_format = '%Y.%m.%d'
+# перменная,хранящая настяоящее время
+now = datetime.datetime.now()
 
 if os.path.exists(file_tasks):
     # если файл существует
@@ -60,13 +62,15 @@ def main():
             new_note()
                 
         elif variant == 2:
-            print_task(_filter=True)
-            
+            print_task()
         elif variant == 3:
-            print_task(_filter=perfom_note)
+            print_task(filter_perfom_note)
+                #filter=lambda task: True if task['status']=='not done' 
+                #else False)
 
         elif variant == 4:
-            print_task(_filter=future_note)
+            print_task(filter_future_note)
+                #filter=lambda task: True if task['end']>now else False)
 
         elif variant == 5:
             del_note()
@@ -133,32 +137,39 @@ def new_note():
     # записываем наш список в файл     
     write_file()
 
-def perfom_note(task):
-    
+def filter_perfom_note(task):
+    """
+    функция сортировки выполненых задач
+    """
     if task['status'] == 'done':
         return True                 
     else:
         return False
 
-def future_note(task):
-
-    now = datetime.datetime.now()
+def filter_future_note(task):
+    """
+    функция сортировки будущих задач
+    """    
     if task['end'] > now:
         return True
     else:
         return False    
 
-def print_task(_filter):
-    now = datetime.datetime.now()
+def print_task(filter=None):
     for (number, task) in enumerate(tasks, start=1):
         target = task['target'] 
-        if  _filter(task) == True:
+        if filter is None:
             print( 
                 u'Задача №{0}| {1:10} | {start} | {end} | {status}'
                 .format(number, get_short_string(target), **task))
+        elif filter(task) is True:
+            print( 
+                u'Задача №{0}| {1:10} | {start} | {end} | {status}'
+                .format(number, get_short_string(target), **task))     
 
 def del_note():
     """
+
     функция удаления задачи.
     """
     # определяем переменную для записи идентификатора задачи
