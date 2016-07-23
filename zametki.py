@@ -13,8 +13,6 @@ import sys
 file_tasks = 'tasks.txt'
 # формат даты 
 date_format = '%Y.%m.%d'
-# перменная,хранящая настяоящее время
-now = datetime.datetime.now()
 
 if os.path.exists(file_tasks):
     # если файл существует
@@ -63,14 +61,18 @@ def main():
                 
         elif variant == 2:
             print_task()
+
         elif variant == 3:
-            print_task(filter_perfom_note)
-                #filter=lambda task: True if task['status']=='not done' 
-                #else False)
+            print_task(
+                # функция фильтрирующая из списка задач выполненые задачи
+                filter=lambda task: True if task['status']=='done'      
+                else False)    
 
         elif variant == 4:
-            print_task(filter_future_note)
-                #filter=lambda task: True if task['end']>now else False)
+            # перменная,хранящая настоящее время
+            now = datetime.datetime.now()
+            # функция фильрирующая из списка задач будущие задачи    
+            print_task(filter=lambda task: True if task['end']>now else False)   
 
         elif variant == 5:
             del_note()
@@ -137,39 +139,20 @@ def new_note():
     # записываем наш список в файл     
     write_file()
 
-def filter_perfom_note(task):
-    """
-    функция сортировки выполненых задач
-    """
-    if task['status'] == 'done':
-        return True                 
-    else:
-        return False
-
-def filter_future_note(task):
-    """
-    функция сортировки будущих задач
-    """    
-    if task['end'] > now:
-        return True
-    else:
-        return False    
-
 def print_task(filter=None):
+    """
+    функция вывода разного рода списка задач
+    """
     for (number, task) in enumerate(tasks, start=1):
-        target = task['target'] 
-        if filter is None:
+        target = task['target']
+        # создаем условие по фильтру для вывода списка наших задач
+        if filter is None or filter(task) is True:
             print( 
                 u'Задача №{0}| {1:10} | {start} | {end} | {status}'
-                .format(number, get_short_string(target), **task))
-        elif filter(task) is True:
-            print( 
-                u'Задача №{0}| {1:10} | {start} | {end} | {status}'
-                .format(number, get_short_string(target), **task))     
+                .format(number, get_short_string(target), **task))   
 
 def del_note():
     """
-
     функция удаления задачи.
     """
     # определяем переменную для записи идентификатора задачи
