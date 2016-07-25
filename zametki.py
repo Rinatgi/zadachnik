@@ -63,16 +63,13 @@ def main():
             print_task()
 
         elif variant == 3:
-            print_task(
-                # функция фильтрирующая из списка задач выполненые задачи
-                filter=lambda task: True if task['status']=='done'      
-                else False)    
+            print_task(filter=filter_perfom_note)
+                #filter=lambda task: True if task['status']=='done'      
+                #else False)    
 
         elif variant == 4:
-            # перменная,хранящая настоящее время
-            now = datetime.datetime.now()
-            # функция фильрирующая из списка задач будущие задачи    
-            print_task(filter=lambda task: True if task['end']>now else False)   
+            print_task(filter=filter_future_note)
+                #lambda task: True if task['end']>now else False)   
 
         elif variant == 5:
             del_note()
@@ -139,6 +136,20 @@ def new_note():
     # записываем наш список в файл     
     write_file()
 
+def filter_perfom_note(task):
+    """
+    функция сортировки выполненых задач
+    """
+    result = task['status'] == 'done'
+    return result                 
+
+def filter_future_note(task):
+    """
+    функция сортировки выполненых задач
+    """
+    result = task['end'] > datetime.datetime.now() 
+    return result                 
+
 def print_task(filter=None):
     """
     функция вывода разного рода списка задач
@@ -150,7 +161,7 @@ def print_task(filter=None):
             print( 
                 u'Задача №{0}| {1:10} | {start} | {end} | {status}'
                 .format(number, get_short_string(target), **task))   
-
+            
 def del_note():
     """
     функция удаления задачи.
