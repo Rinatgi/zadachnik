@@ -140,15 +140,15 @@ def filter_perfom_note(task):
     """
     функция сортировки выполненых задач
     """
-    result = task['status'] == 'done'
-    return result                 
+    return task['status'] == 'done'
+                   
 
 def filter_future_note(task):
     """
     функция сортировки выполненых задач
     """
-    result = task['end'] > datetime.datetime.now() 
-    return result                 
+    return task['end'] > datetime.datetime.now() 
+                      
 
 def print_task(filter=None):
     """
