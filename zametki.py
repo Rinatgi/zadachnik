@@ -63,13 +63,12 @@ def main():
             print_task()
 
         elif variant == 3:
-            print_task(filter=filter_perfom_note)
-                #filter=lambda task: True if task['status']=='done'      
-                #else False)    
+            # функция выполненых задач
+            print_task(filter=lambda task:task['status']=='done')       
 
         elif variant == 4:
-            print_task(filter=filter_future_note)
-                #lambda task: True if task['end']>now else False)   
+            # функция будущих задач
+            print_task(filter=lambda task:task['end'] > datetime.datetime.now()) 
 
         elif variant == 5:
             del_note()
